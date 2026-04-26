@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能戒指 App 原型</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .prototype-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .prototype-title h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .prototype-title p {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        .prototype-container {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .phone-frame {
+            width: 360px;
+            height: 780px;
+            background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+            border-radius: 45px;
+            padding: 12px;
+            box-shadow: 
+                0 0 0 2px #3d3d3d,
+                0 60px 120px rgba(0,0,0,0.5),
+                inset 0 1px 1px rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 28px;
+            background: #1a1a1a;
+            border-radius: 0 0 16px 16px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            border-radius: 36px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen-content {
+            height: calc(100% - 85px);
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .screen-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 底部导航栏 */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 85px;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 25px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: #8e8e93;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: #6366f1;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 首页样式 */
+        .home-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 55px 20px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .home-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -20%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-left h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .header-date {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .ring-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: white;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+            50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+        }
+
+        .hero-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin: -45px 15px 20px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .hero-ring {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ring-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .ring-icon::before {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+
+        .ring-info h3 {
+            font-size: 17px;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .ring-info p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .ring-battery {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #4ade80;
+        }
+
+        .ring-battery svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 健康卡片网格 */
+        .health-section {
+            padding: 0 15px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .health-card {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+        }
+
+        .health-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .health-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .health-card-title {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .health-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .health-card-icon.heart { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+        .health-card-icon.blood { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+        .health-card-icon.temp { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+        .health-card-icon.hrv { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+
+        .health-value {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -1px;
+        }
+
+        .health-unit {
+            font-size: 14px;
+            font-weight: 400;
+            color: #999;
+            margin-left: 2px;
+        }
+
+        .health-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .health-trend.up { color: #ef4444; }
+        .health-trend.down { color: #22c55e; }
+        .health-trend.stable { color: #666; }
+
+        /* 趋势页面 */
+        .trend-header {
+            padding: 55px 20px 20px;
+            background: white;
+        }
+
+        .trend-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .trend-tabs {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .trend-tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .trend-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .chart-section {
+            padding: 15px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .chart-value {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .chart-value-number {
+            font-size: 22px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .chart-value-unit {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 140px;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        .chart-label {
+            text-align: center;
+        }
+
+        .chart-label span {
+            display: block;
+        }
+
+        .chart-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .chart-stat {
+            text-align: center;
+        }
+
+        .chart-stat-label {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .chart-stat-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .chart-stat-value.high { color: #ef4444; }
+        .chart-stat-value.low { color: #3b82f6; }
+        .chart-stat-value.avg { color: #22c55e; }
+
+        /* 睡眠卡片 */
+        .sleep-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 0 15px 15px;
+        }
+
+        .sleep-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sleep-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .sleep-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .sleep-main {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sleep-duration {
+            font-size: 42px;
+            font-weight: 700;
+        }
+
+        .sleep-quality {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+        }
+
+        .sleep-stages {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .sleep-stage {
+            text-align: center;
+        }
+
+        .sleep-stage-value {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sleep-stage-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* 设置页面 */
+        .settings-header {
+            padding: 55px 20px 20px;
+        }
+
+        .settings-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .settings-section {
+            padding: 0 15px;
+        }
+
+        .settings-section-title {
+            font-size: 13px;
+            color: #999;
+            margin: 20px 0 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .gesture-card {
+            background: white;
+            border-radius: 16px;
+            padding: 4px 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .gesture-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+        }
+
+        .gesture-item:not(:last-child) {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .gesture-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .gesture-info {
+            flex: 1;
+        }
+
+        .gesture-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .gesture-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .gesture-toggle {
+            width: 52px;
+            height: 30px;
+            background: #e5e5ea;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gesture-toggle.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gesture-toggle::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .gesture-toggle.active::after {
+            left: 24px;
+        }
+
+        /* 告警页面 */
+        .alert-header {
+            padding: 55px 20px 25px;
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        }
+
+        .alert-icon {
+            width: 56px;
+            height: 56px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .alert-icon span {
+            font-size: 24px;
+        }
+
+        .alert-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .alert-desc {
+            font-size: 14px;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .alert-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        .alert-list {
+            padding: 15px;
+        }
+
+        .alert-item {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .alert-item.warning::before { background: #f59e0b; }
+        .alert-item.danger::before { background: #ef4444; }
+        .alert-item.info::before { background: #3b82f6; }
+
+        .alert-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .alert-item-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .alert-item-badge {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .alert-item-badge.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .alert-item-badge.danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .alert-item-badge.info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .alert-item-content {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .alert-item-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* 设备管理页面 */
+        .device-header {
+            padding: 55px 20px 25px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .device-ring-visual {
+            margin-bottom: 20px;
+        }
+
+        .ring-3d {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 
+                0 15px 35px rgba(102, 126, 234, 0.5),
+                inset 0 -5px 20px rgba(0,0,0,0.2);
+            animation: ring-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes ring-glow {
+            0%, 100% { box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5), inset 0 -5px 20px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 15px 50px rgba(102, 126, 234, 0.7), 0 0 30px rgba(102, 126, 234, 0.3), inset 0 -5px 20px rgba(0,0,0,0.2); }
+        }
+
+        .ring-3d::before {
+            content: '';
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-radius: 50%;
+        }
+
+        .ring-3d::after {
+            content: '';
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+        }
+
+        .device-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .device-status {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .device-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .device-stat {
+            text-align: center;
+        }
+
+        .device-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .device-stat-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        .device-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 15px;
+        }
+
+        .device-action {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .device-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .device-action-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 20px;
+        }
+
+        .device-action-name {
+            font-size: 13px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        /* 页面标签 */
+        .page-label {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .page-label span {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px 24px;
+            border-radius: 25px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="prototype-title">
+        <h1>智能戒指 App 产品原型</h1>
+        <p>Smart Ring App Prototype Design</p>
+    </div>
+
+    <div class="prototype-container">
+        <!-- 页面1：首页仪表盘 -->
+        <div>
+            <div class="page-label"><span>🏠 首页仪表盘</span></div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="screen-content">
+                        <div class="home-header">
+                            <div class="header-top">
+                                <div class="header-left">
+                                    <h1>健康中心</h1>
+                                    <div class="header-date">2026年4月25日 · 周六</div>
+                                </div>
+                                <div class="ring-status">
+                                    <div class="status-dot"></div>
+                                    <span>戒指已连接</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hero-card">
+                            <div class="hero-ring">
+                                <div class="ring-icon"></div>
+                                <div class="ring-info">
+                                    <h3>智能戒指 Pro</h3>
+                                    <p>电量充足 · 信号良好</p>
+                                    <div class="ring-battery">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <rect x="2" y="7" width="18" height="10" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            <rect x="4" y="9" width="13" height="6" rx="1" fill="currentColor"/>
+                                            <rect x="20" y="10" width="2" height="4" fill="currentColor"/>
+                                        </svg>
+                                        <span>85% · 约5天续航</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="health-section">
+                            <h2 class="section-title">健康指标</h2>
+                            <div class="health-grid">
+                                <div class="health-card">
+                                    <div class="health-card-header">
+                                        <span class="health-card-title">心率</span>
+                                        <div class="health-card-icon heart">♥</div>
+                                    </div>
+                                    <div class="health-value">72<span class="health-unit">bpm</span></div>
+                                    <div class="health-trend stable">→ 正常范围</div>
+                                </div>
+
+                                <div class="health-card">
+                                    <div class="health-card-header">
+                                        <span class="health-card-title">血压</span>
+                                        <div class="health-card-icon blood">◆</div>
+                                    </div>
+                                    <div class="health-value">118/76<span class="health-unit">mmHg</span></div>
+                                    <div class="health-trend down">↓ 理想血压</div>
+                                </div>
+
+                                <div class="health-card">
+                                    <div class="health-card-header">
+                                        <span class="health-card-title">体温</span>
+                                        <div class="health-card-icon temp">△</div>
+                                    </div>
+                                    <div class="health-value">36.4<span class="health-unit">℃</span></div>
+                                    <div class="health-trend stable">→ 正常</div>
+                                </div>
+
+                                <div class="health-card">
+                                    <div class="health-card-header">
+                                        <span class="health-card-title">HRV</span>
+                                        <div class="health-card-icon hrv">∞</div>
+                                    </div>
+                                    <div class="health-value">58<span class="health-unit">ms</span></div>
+                                    <div class="health-trend up">↑ 状态良好</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-nav">
+                        <div class="nav-item active">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                            <span>首页</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                            <span>趋势</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>设置</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                            <span>告警</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span>我的</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面2：趋势分析 -->
+        <div>
+            <div class="page-label"><span>📈 趋势分析</span></div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="screen-content">
+                        <div class="trend-header">
+                            <div class="trend-title">健康趋势</div>
+                            <div class="trend-tabs">
+                                <div class="trend-tab">日</div>
+                                <div class="trend-tab active">周</div>
+                                <div class="trend-tab">月</div>
+                            </div>
+                        </div>
+
+                        <!-- 心率趋势 -->
+                        <div class="chart-section">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">💓 心率趋势</div>
+                                    <div class="chart-value">
+                                        <span class="chart-value-number">72</span>
+                                        <span class="chart-value-unit">bpm</span>
+                                    </div>
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="heartChart" class="chart-canvas"></canvas>
+                                </div>
+                                <div class="chart-labels">
+                                    <div class="chart-label"><span>一</span></div>
+                                    <div class="chart-label"><span>二</span></div>
+                                    <div class="chart-label"><span>三</span></div>
+                                    <div class="chart-label"><span>四</span></div>
+                                    <div class="chart-label"><span>五</span></div>
+                                    <div class="chart-label"><span>六</span></div>
+                                    <div class="chart-label"><span>日</span></div>
+                                </div>
+                                <div class="chart-stats">
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">最高</div>
+                                        <div class="chart-stat-value high">98bpm</div>
+                                    </div>
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">最低</div>
+                                        <div class="chart-stat-value low">58bpm</div>
+                                    </div>
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">平均</div>
+                                        <div class="chart-stat-value avg">72bpm</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 血压趋势 -->
+                        <div class="chart-section">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">🩸 血压趋势</div>
+                                    <div class="chart-value">
+                                        <span class="chart-value-number">118/76</span>
+                                        <span class="chart-value-unit">mmHg</span>
+                                    </div>
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="bpChart" class="chart-canvas"></canvas>
+                                </div>
+                                <div class="chart-labels">
+                                    <div class="chart-label"><span>一</span></div>
+                                    <div class="chart-label"><span>二</span></div>
+                                    <div class="chart-label"><span>三</span></div>
+                                    <div class="chart-label"><span>四</span></div>
+                                    <div class="chart-label"><span>五</span></div>
+                                    <div class="chart-label"><span>六</span></div>
+                                    <div class="chart-label"><span>日</span></div>
+                                </div>
+                                <div class="chart-stats">
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">收缩压均值</div>
+                                        <div class="chart-stat-value">122mmHg</div>
+                                    </div>
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">舒张压均值</div>
+                                        <div class="chart-stat-value">78mmHg</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HRV趋势 -->
+                        <div class="chart-section">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">∞ HRV趋势</div>
+                                    <div class="chart-value">
+                                        <span class="chart-value-number">58</span>
+                                        <span class="chart-value-unit">ms</span>
+                                    </div>
+                                </div>
+                                <div class="chart-wrapper">
+                                    <canvas id="hrvChart" class="chart-canvas"></canvas>
+                                </div>
+                                <div class="chart-labels">
+                                    <div class="chart-label"><span>一</span></div>
+                                    <div class="chart-label"><span>二</span></div>
+                                    <div class="chart-label"><span>三</span></div>
+                                    <div class="chart-label"><span>四</span></div>
+                                    <div class="chart-label"><span>五</span></div>
+                                    <div class="chart-label"><span>六</span></div>
+                                    <div class="chart-label"><span>日</span></div>
+                                </div>
+                                <div class="chart-stats">
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">本周平均</div>
+                                        <div class="chart-stat-value avg">56ms</div>
+                                    </div>
+                                    <div class="chart-stat">
+                                        <div class="chart-stat-label">较上周</div>
+                                        <div class="chart-stat-value avg">↑ 8%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                            <span>首页</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                            <span>趋势</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>设置</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                            <span>告警</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span>我的</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面3：手势设置 -->
+        <div>
+            <div class="page-label"><span>⚙️ 手势设置</span></div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="screen-content">
+                        <div class="settings-header">
+                            <div class="settings-title">手势控制</div>
+                        </div>
+
+                        <div class="settings-section">
+                            <div class="settings-section-title">手势识别</div>
+
+                            <div class="gesture-card">
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">👆👆</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">双击启动</div>
+                                        <div class="gesture-desc">连续快速敲击两次，开始生理信号采集</div>
+                                    </div>
+                                    <div class="gesture-toggle active"></div>
+                                </div>
+
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">→</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">滑动手势</div>
+                                        <div class="gesture-desc">手指滑动，控制手机/电脑翻页</div>
+                                    </div>
+                                    <div class="gesture-toggle active"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <div class="settings-section-title">震动反馈</div>
+
+                            <div class="gesture-card">
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">📳</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">开始采集反馈</div>
+                                        <div class="gesture-desc">双击确认 · 短震1下</div>
+                                    </div>
+                                    <div class="gesture-toggle active"></div>
+                                </div>
+
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">📳📳</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">采集完成反馈</div>
+                                        <div class="gesture-desc">检测结束 · 短震2下</div>
+                                    </div>
+                                    <div class="gesture-toggle active"></div>
+                                </div>
+
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">⚠️</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">异常预警</div>
+                                        <div class="gesture-desc">检测到异常时 · 长震1秒</div>
+                                    </div>
+                                    <div class="gesture-toggle active"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <div class="settings-section-title">设备联动</div>
+
+                            <div class="gesture-card">
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">📱</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">手机联动</div>
+                                        <div class="gesture-desc">滑动切换音乐、遥控拍照</div>
+                                    </div>
+                                    <div class="gesture-toggle active"></div>
+                                </div>
+
+                                <div class="gesture-item">
+                                    <div class="gesture-icon">💻</div>
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">电脑联动</div>
+                                        <div class="gesture-desc">滑动翻页、演示控制</div>
+                                    </div>
+                                    <div class="gesture-toggle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                            <span>首页</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                            <span>趋势</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>设置</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                            <span>告警</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span>我的</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面4：告警中心 -->
+        <div>
+            <div class="page-label"><span>🔔 告警中心</span></div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="screen-content">
+                        <div class="alert-header">
+                            <div class="alert-icon"><span>✓</span></div>
+                            <div class="alert-title">健康状态良好</div>
+                            <div class="alert-desc">今日暂无异常，继续保持！</div>
+                            <div class="alert-time">更新于 10分钟前</div>
+                        </div>
+
+                        <div class="alert-list">
+                            <div class="alert-item warning">
+                                <div class="alert-item-header">
+                                    <span class="alert-item-title">心率偏快提醒</span>
+                                    <span class="alert-item-badge warning">轻微</span>
+                                </div>
+                                <div class="alert-item-content">
+                                    下午14:30检测到心率达到98bpm，略高于正常范围。可能与咖啡摄入或轻度运动有关，建议稍作休息后复测。
+                                </div>
+                                <div class="alert-item-time">今天 14:32</div>
+                            </div>
+
+                            <div class="alert-item info">
+                                <div class="alert-item-header">
+                                    <span class="alert-item-title">睡眠质量报告</span>
+                                    <span class="alert-item-badge info">信息</span>
+                                </div>
+                                <div class="alert-item-content">
+                                    昨夜睡眠时长7小时32分钟，深度睡眠占比23%，较上周平均水平提升12%。继续保持规律作息！
+                                </div>
+                                <div class="alert-item-time">今天 08:00</div>
+                            </div>
+
+                            <div class="alert-item info">
+                                <div class="alert-item-header">
+                                    <span class="alert-item-title">HRV趋势向好</span>
+                                    <span class="alert-item-badge info">良好</span>
+                                </div>
+                                <div class="alert-item-content">
+                                    本周平均HRV为56ms，较上周提升8%。自主神经系统状态良好，压力水平处于适中范围。
+                                </div>
+                                <div class="alert-item-time">昨天 20:00</div>
+                            </div>
+
+                            <div class="alert-item warning">
+                                <div class="alert-item-header">
+                                    <span class="alert-item-title">血压波动提醒</span>
+                                    <span class="alert-item-badge warning">轻微</span>
+                                </div>
+                                <div class="alert-item-content">
+                                    下午16:00测得血压135/88mmHg，略高于理想值。建议减少盐分摄入，保持每日30分钟适度运动。
+                                </div>
+                                <div class="alert-item-time">昨天 16:05</div>
+                            </div>
+
+                            <div class="alert-item info">
+                                <div class="alert-item-header">
+                                    <span class="alert-item-title">戒指佩戴提醒</span>
+                                    <span class="alert-item-badge info">提示</span>
+                                </div>
+                                <div class="alert-item-content">
+                                    已连续3天未检测到夜间睡眠数据。请确保入睡时正常佩戴戒指以获取完整睡眠分析。
+                                </div>
+                                <div class="alert-item-time">2天前</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                            <span>首页</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                            <span>趋势</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>设置</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                            <span>告警</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span>我的</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面5：设备管理 -->
+        <div>
+            <div class="page-label"><span>📱 设备管理</span></div>
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="screen-content">
+                        <div class="device-header">
+                            <div class="device-ring-visual">
+                                <div class="ring-3d"></div>
+                            </div>
+                            <div class="device-name">智能戒指 Pro</div>
+                            <div class="device-status">已连接 · 信号良好</div>
+                            <div class="device-stats">
+                                <div class="device-stat">
+                                    <div class="device-stat-value">85%</div>
+                                    <div class="device-stat-label">电量</div>
+                                </div>
+                                <div class="device-stat">
+                                    <div class="device-stat-value">5天</div>
+                                    <div class="device-stat-label">预估续航</div>
+                                </div>
+                                <div class="device-stat">
+                                    <div class="device-stat-value">v2.1</div>
+                                    <div class="device-stat-label">固件版本</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="device-actions">
+                            <div class="device-action">
+                                <div class="device-action-icon">🔄</div>
+                                <div class="device-action-name">固件更新</div>
+                            </div>
+                            <div class="device-action">
+                                <div class="device-action-icon">🔋</div>
+                                <div class="device-action-name">充电提醒</div>
+                            </div>
+                            <div class="device-action">
+                                <div class="device-action-icon">📍</div>
+                                <div class="device-action-name">查找戒指</div>
+                            </div>
+                            <div class="device-action">
+                                <div class="device-action-icon">⚙️</div>
+                                <div class="device-action-name">设置</div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <div class="settings-section-title">设备信息</div>
+                            <div class="gesture-card">
+                                <div class="gesture-item">
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">设备型号</div>
+                                    </div>
+                                    <span style="color:#999; font-size:13px;">Ring Pro 2026</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">序列号</div>
+                                    </div>
+                                    <span style="color:#999; font-size:13px;">2026-XXXXXX</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">戒指尺寸</div>
+                                    </div>
+                                    <span style="color:#999; font-size:13px;">M码 (56-60mm)</span>
+                                </div>
+                                <div class="gesture-item">
+                                    <div class="gesture-info">
+                                        <div class="gesture-name">蓝牙地址</div>
+                                    </div>
+                                    <span style="color:#999; font-size:13px;">XX:XX:XX:XX:XX</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                            <span>首页</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                            <span>趋势</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>设置</span>
+                        </div>
+                        <div class="nav-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                            <span>告警</span>
+                        </div>
+                        <div class="nav-item active">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span>我的</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 绘制心率图表
+        function drawHeartChart() {
+            const canvas = document.getElementById('heartChart');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * 2;
+            canvas.height = rect.height * 2;
+            ctx.scale(2, 2);
+
+            const width = rect.width;
+            const height = rect.height;
+            const data = [65, 72, 68, 75, 70, 78, 72, 68, 74, 71, 69, 76, 73, 70, 72];
+            const max = 100;
+            const min = 55;
+            const padding = 10;
+
+            // 绘制渐变区域
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            
+            data.forEach((value, index) => {
+                const x = padding + (index / (data.length - 1)) * (width - padding * 2);
+                const y = height - padding - ((value - min) / (max - min)) * (height - padding * 2);
+                if (index === 0) {
+                    ctx.lineTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+
+            ctx.lineTo(width - padding, height - padding);
+            ctx.closePath();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, 'rgba(102, 126, 234, 0.3)');
+            gradient.addColorStop(1, 'rgba(102, 126, 234, 0.0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // 绘制线条
+            ctx.beginPath();
+            data.forEach((value, index) => {
+                const x = padding + (index / (data.length - 1)) * (width - padding * 2);
+                const y = height - padding - ((value - min) / (max - min)) * (height - padding * 2);
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            // 绘制数据点
+            data.forEach((value, index) => {
+                const x = padding + (index / (data.length - 1)) * (width - padding * 2);
+                const y = height - padding - ((value - min) / (max - min)) * (height - padding * 2);
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#667eea';
+                ctx.fill();
+            });
+        }
+
+        // 绘制血压图表
+        function drawBPChart() {
+            const canvas = document.getElementById('bpChart');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * 2;
+            canvas.height = rect.height * 2;
+            ctx.scale(2, 2);
+
+            const width = rect.width;
+            const height = rect.height;
+            const systolic = [125, 130, 122, 128, 120, 135, 118, 124, 126, 122, 128, 120, 125, 122, 118];
+            const diastolic = [80, 82, 78, 85, 76, 88, 76, 80, 82, 78, 84, 76, 80, 78, 76];
+            const maxS = 145;
+            const minD = 70;
+
+            // 绘制收缩压
+            ctx.beginPath();
+            systolic.forEach((value, index) => {
+                const x = 10 + (index / (systolic.length - 1)) * (width - 20);
+                const y = height - 10 - ((value - 100) / 50) * (height - 20);
+                if (index === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#ec4899';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // 绘制舒张压
+            ctx.beginPath();
+            diastolic.forEach((value, index) => {
+                const x = 10 + (index / (diastolic.length - 1)) * (width - 20);
+                const y = height - 10 - ((value - minD) / 30) * (height - 20);
+                if (index === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#8b5cf6';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // 图例
+            ctx.font = '10px sans-serif';
+            ctx.fillStyle = '#ec4899';
+            ctx.fillText('收缩压', 5, 12);
+            ctx.fillStyle = '#8b5cf6';
+            ctx.fillText('舒张压', 55, 12);
+        }
+
+        // 绘制HRV图表
+        function drawHRVChart() {
+            const canvas = document.getElementById('hrvChart');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * 2;
+            canvas.height = rect.height * 2;
+            ctx.scale(2, 2);
+
+            const width = rect.width;
+            const height = rect.height;
+            const data = [52, 55, 48, 58, 54, 60, 56, 50, 55, 52, 58, 54, 60, 56, 58];
+            const max = 70;
+            const min = 40;
+
+            // 绘制渐变区域
+            ctx.beginPath();
+            ctx.moveTo(10, height - 10);
+            
+            data.forEach((value, index) => {
+                const x = 10 + (index / (data.length - 1)) * (width - 20);
+                const y = height - 10 - ((value - min) / (max - min)) * (height - 20);
+                ctx.lineTo(x, y);
+            });
+
+            ctx.lineTo(width - 10, height - 10);
+            ctx.closePath();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+            gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // 绘制线条
+            ctx.beginPath();
+            data.forEach((value, index) => {
+                const x = 10 + (index / (data.length - 1)) * (width - 20);
+                const y = height - 10 - ((value - min) / (max - min)) * (height - 20);
+                if (index === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // 绘制数据点
+            data.forEach((value, index) => {
+                const x = 10 + (index / (data.length - 1)) * (width - 20);
+                const y = height - 10 - ((value - min) / (max - min)) * (height - 20);
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+            });
+        }
+
+        // 页面加载后绘制图表
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                drawHeartChart();
+                drawBPChart();
+                drawHRVChart();
+            }, 100);
+        });
+
+        // 窗口大小改变时重绘
+        window.addEventListener('resize', () => {
+            setTimeout(() => {
+                drawHeartChart();
+                drawBPChart();
+                drawHRVChart();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
